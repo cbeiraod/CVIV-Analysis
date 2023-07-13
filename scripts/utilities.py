@@ -27,6 +27,11 @@ import datetime
 import sqlite3
 import hashlib
 
+import pandas
+
+import plotly.express as px
+import plotly.graph_objects as go
+
 class CVIV_Types(enum.Enum):
     IV = 0
     IV_Two_Probes = 1
@@ -338,6 +343,107 @@ def create_run_backup_table(conn: sqlite3.Connection, tableName: str, runInfoTab
     if len(res.fetchall()) == 0:  # If table does not exist
         create_table_sql = f"CREATE TABLE `{tableName}` (`RunID` INTEGER PRIMARY KEY NOT NULL, `Data` BLOB NOT NULL, FOREIGN KEY (RunID) REFERENCES `{runInfoTable}` (RunID) ON UPDATE CASCADE);"
         conn.execute(create_table_sql)
+
+def make_line_plot(
+                    data_df: pandas.DataFrame,
+                    file_path: Path,
+                    plot_title: str,
+                    x_var: str,
+                    y_var: str,
+                    run_name: str,
+                    labels: dict[str, str] = {},
+                    full_html:bool = False,
+                    subtitle: str = "",
+                    extra_title: str = "",
+                    x_error: str = None,
+                    y_error: str = None,
+                    font_size: int = None,
+                    color_var: str = None,
+                    ):
+    if extra_title is None:
+        extra_title = ""
+    if extra_title != "":
+        #extra_title = "<br>" + extra_title
+        extra_title = "; " + extra_title
+
+    fig = px.line(
+        data_df,
+        x=x_var,
+        y=y_var,
+        error_x=x_error,
+        error_y=y_error,
+        labels = labels,
+        title = "{}<br><sup>{}; Run: {}{}</sup>".format(plot_title, subtitle, run_name, extra_title),
+        markers=True,
+        #text=var,
+        color=color_var,
+    )
+
+    if font_size is not None:
+        fig.update_layout(
+            font=dict(
+                #family="Courier New, monospace",
+                size=font_size,  # Set the font size here
+                #color="RebeccaPurple"
+            )
+        )
+
+    fig.write_html(
+        file_path,
+        full_html = full_html,
+        include_plotlyjs = 'cdn',
+    )
+
+def make_series_plot(
+                    data_df: pandas.DataFrame,
+                    file_path: Path,
+                    plot_title: str,
+                    var: str,
+                    run_name: str,
+                    labels: dict[str, str] = {},
+                    full_html:bool = False,
+                    subtitle: str = "",
+                    extra_title: str = "",
+                    error: str = None,
+                    font_size: int = None,
+                    color_var: str = None,
+                    ):
+    if extra_title is None:
+        extra_title = ""
+    if extra_title != "":
+        #extra_title = "<br>" + extra_title
+        extra_title = "; " + extra_title
+
+    if "index" not in labels:
+        labels["index"] = "Measurement #"
+
+    fig = px.line(
+        data_df,
+        x=data_df.index,
+        y=var,
+        error_x=None,
+        error_y=error,
+        labels = labels,
+        title = "{}<br><sup>{}; Run: {}{}</sup>".format(plot_title, subtitle, run_name, extra_title),
+        markers=True,
+        #text=var,
+        color=color_var,
+    )
+
+    if font_size is not None:
+        fig.update_layout(
+            font=dict(
+                #family="Courier New, monospace",
+                size=font_size,  # Set the font size here
+                #color="RebeccaPurple"
+            )
+        )
+
+    fig.write_html(
+        file_path,
+        full_html = full_html,
+        include_plotlyjs = 'cdn',
+    )
 
 if __name__ == "__main__":
     raise RuntimeError("Do not try to run this file, it is not a standalone script. It contains several common utilities used by the other scripts")
