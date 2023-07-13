@@ -208,7 +208,7 @@ def get_column_info_for_db(colName: str):
     elif colName == "name":
         return "TEXT NOT NULL"
     elif colName == "type":
-        return "TEXT NOT NULL"
+        return "INTEGER NOT NULL"
     elif colName == "version":
         return "TEXT"
     elif colName == "start":

@@ -105,7 +105,7 @@ def script_main(
                             if type(runInfo[key]) == bool:
                                 values += [int(runInfo[key])]
                             elif type(runInfo[key]) == utilities.CVIV_Types:
-                                values += [str(runInfo[key])]
+                                values += [int(runInfo[key].value)]
                             else:
                                 values += [runInfo[key]]
 
