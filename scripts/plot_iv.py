@@ -40,7 +40,7 @@ def plot_iv_task(
             with sqlite3.connect(db_path) as sql_conn:
                 utilities.enable_foreign_keys(sql_conn)
 
-                run_name = Isabel.path_directory.name
+                run_name = Isabel.run_name
 
                 run_info_sql = f"SELECT `RunID`,`RunName`,`path`,`type`,`sample`,`pixel row`,`pixel col`,`begin location`,`end location`,`Observations` FROM 'RunInfo' WHERE `RunName`=?;"
                 res = sql_conn.execute(run_info_sql, [run_name]).fetchall()
