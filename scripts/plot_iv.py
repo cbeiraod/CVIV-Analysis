@@ -104,7 +104,6 @@ def plot_iv_task(
                     df3['loc'] = "Total"
 
                     joined_df = pandas.concat([df2, df3])#, ignore_index=True)
-                    print(joined_df)
 
                     utilities.make_series_plot(
                                                 data_df = df,
@@ -164,7 +163,7 @@ def script_main(
                 run_path: Path,
                 font_size: int = 18,
                 ):
-    logger = logging.getLogger('load_df')
+    logger = logging.getLogger('plot_iv')
 
     run_name = run_path.name
 
