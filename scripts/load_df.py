@@ -71,7 +71,7 @@ def load_df_task(Pedro: RM.RunManager, db_path: Path, run_name: str, output_path
             # df.to_feather(Lilly.path_directory / "data.feather")
             df.to_csv(Lilly.path_directory / "data.csv", index=False)
 
-            print(df)
+            # print(df)
 
 def script_main(
                 db_path: Path,
