@@ -55,7 +55,7 @@ def script_main(
                     load_idx += 1
                 if load_idx == len(load_info):
                     load_info += [None]
-            load_idx = 0  # For testing, remove this later
+            # load_idx = 0  # For testing, remove this later
 
         task_name = f'load_pass_{load_idx}'
         with Johnny.handle_task(task_name, drop_old_data=True) as Carrie:
