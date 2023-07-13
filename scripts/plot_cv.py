@@ -123,8 +123,8 @@ def plot_cv_task(
                                         )
                 utilities.make_line_plot(
                                             data_df = df,
-                                            file_path = Alice.task_path/"ConV.html",
-                                            plot_title = "<b>ConV - Conductivity vs Voltage</b>",
+                                            file_path = Alice.task_path/"GV.html",
+                                            plot_title = "<b>GV - Conductivity vs Voltage</b>",
                                             x_var = "Bias Voltage [V]",
                                             y_var = "Conductivity [S]",
                                             run_name = Alice.run_name,
@@ -134,8 +134,8 @@ def plot_cv_task(
                                         )
                 utilities.make_line_plot(
                                             data_df = df,
-                                            file_path = Alice.task_path/"ConC.html",
-                                            plot_title = "<b>ConC - Conductivity vs Capacitance</b>",
+                                            file_path = Alice.task_path/"GC.html",
+                                            plot_title = "<b>GC - Conductivity vs Capacitance</b>",
                                             x_var = "Capacitance [F]",
                                             y_var = "Conductivity [S]",
                                             run_name = Alice.run_name,
