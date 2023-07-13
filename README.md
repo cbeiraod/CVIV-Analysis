@@ -4,6 +4,7 @@ Script for analysing and processing the CVIV from LGAD measurements.
 
  * `compare.py` - This scripts compares the contents of an in directory and a compare directory in order to make sure all the files in the in directory also exist and have the same contents as the cmp directory. Please pay attention to the output of this script when using it.
  * `load_runs.py` - This script loads the runs into the database and keeps a copy of the data in the database as well. This shold be the first 'analysis' script to run.
+ * `load_df.py` - This script loads the data from the original file and loads it into a dataframe, subsequently saving the dataframe in CSV format into the run directory.
 
 ## Dependencies
 
