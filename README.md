@@ -7,7 +7,7 @@ Script for analysing and processing the CVIV from LGAD measurements.
 
 ## Dependencies
 
-Some of the scripts in the repository use the 'LIP-PPS-Run-Manager' and 'pandas' libraries, please install them in order to use the scripts. I suggest using a venv for keeping environments separate and installing what is needed for specific use cases.
+Some of the scripts in the repository use the 'LIP-PPS-Run-Manager', 'pandas' and 'pyarrow' libraries, please install them in order to use the scripts. I suggest using a venv for keeping environments separate and installing what is needed for specific use cases.
 
 ### Venv installation
 
@@ -23,3 +23,4 @@ Install the libraries, after activating the venv if using one, with:
  * `python -m pip install --upgrade pip`
  * `python -m pip install lip-pps-run-manager`
  * `python -m pip install pandas`
+ * `python -m pip install pyarrow`
