@@ -9,6 +9,7 @@ Script for analysing and processing the CVIV from LGAD measurements.
  * `load_df.py` - This script loads the data from the original file and loads it into a dataframe, subsequently saving the dataframe in CSV format into the run directory.
  * `plot_iv.py` - This script plots the IV curves both for CV runs and IV runs
  * `plot_cv.py` - This script plots the CV curves for CV runs
+ * `process_all_runs.py` - This script loads the run list from the run database and then runs the load_df, plot_iv and plot_cv tasks for each run
 
 ## Dependencies
 
