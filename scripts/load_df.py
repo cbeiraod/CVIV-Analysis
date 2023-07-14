@@ -77,6 +77,7 @@ def script_main(
                 db_path: Path,
                 run_name: str,
                 output_path: Path,
+                already_exists: bool = False,
                 ):
     logger = logging.getLogger('load_df')
 
@@ -95,7 +96,7 @@ def script_main(
         raise RuntimeError(f"Could not find a run file in the run database for run {run_name}")
 
     with RM.RunManager(output_path / run_name) as William:
-        William.create_run(raise_error=True)
+        William.create_run(raise_error=not already_exists)
 
         load_df_task(William, db_path, run_name, output_path)
 
