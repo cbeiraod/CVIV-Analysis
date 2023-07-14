@@ -364,7 +364,7 @@ def make_line_plot(
         extra_title = ""
     if extra_title != "":
         #extra_title = "<br>" + extra_title
-        extra_title = "; " + extra_title
+        extra_title = " - " + extra_title
 
     fig = px.line(
         data_df,
@@ -412,7 +412,7 @@ def make_series_plot(
         extra_title = ""
     if extra_title != "":
         #extra_title = "<br>" + extra_title
-        extra_title = "; " + extra_title
+        extra_title = " - " + extra_title
 
     if "index" not in labels:
         labels["index"] = "Measurement #"
