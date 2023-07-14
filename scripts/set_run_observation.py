@@ -48,6 +48,9 @@ def script_main(
         del res
         del run_info_sql
 
+    if observations == "":
+        observations = None
+
     run_path = db_path.parent / "SetDBObservations"
 
     with RM.RunManager(run_path.resolve()) as Alan:
