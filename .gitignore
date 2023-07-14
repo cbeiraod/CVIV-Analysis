@@ -2,3 +2,5 @@
 *.cv
 data/*
 venv/*
+compare_runs.csv
+
