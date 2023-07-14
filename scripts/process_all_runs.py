@@ -79,8 +79,8 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-                    prog='plot_iv.py',
-                    description='This script plots the IV curve of an IV or CV run',
+                    prog='process_all_runs.py',
+                    description='This script goes through all the runs in the database and processes them in order to create the basic plots',
                     #epilog='Text at the bottom of help'
                     )
 
