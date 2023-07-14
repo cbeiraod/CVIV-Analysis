@@ -89,6 +89,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            do_log = False,
                                         )
                 utilities.make_series_plot(
                                             data_df = df,
@@ -99,6 +100,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            do_log = False,
                                         )
                 utilities.make_series_plot(
                                             data_df = df,
@@ -109,6 +111,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            do_log = False,
                                         )
                 utilities.make_line_plot(
                                             data_df = df,

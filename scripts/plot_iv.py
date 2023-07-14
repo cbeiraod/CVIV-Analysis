@@ -71,6 +71,7 @@ def plot_iv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            do_log = False,
                                         )
                 utilities.make_series_plot(
                                             data_df = df,
@@ -81,6 +82,7 @@ def plot_iv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            do_log = False,
                                         )
                 utilities.make_line_plot(
                                             data_df = df,
@@ -114,6 +116,7 @@ def plot_iv_task(
                                                 subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                                 extra_title = observations,
                                                 font_size = font_size,
+                                                do_log = False,
                                             )
                     utilities.make_line_plot(
                                                 data_df = df,
@@ -139,7 +142,8 @@ def plot_iv_task(
                                                 color_var = "loc",
                                                 labels = {
                                                     "loc": "Measured"
-                                                }
+                                                },
+                                                do_log = False,
                                             )
                     utilities.make_line_plot(
                                                 data_df = joined_df,

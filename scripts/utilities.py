@@ -359,6 +359,7 @@ def make_line_plot(
                     y_error: str = None,
                     font_size: int = None,
                     color_var: str = None,
+                    do_log: bool = True,
                     ):
     if extra_title is None:
         extra_title = ""
@@ -394,6 +395,23 @@ def make_line_plot(
         include_plotlyjs = 'cdn',
     )
 
+    if do_log:
+        fig.update_yaxes(type="log")
+
+        fig.write_html(
+            file_path.parent / (file_path.stem + "_logy.html"),
+            full_html = full_html,
+            include_plotlyjs = 'cdn',
+        )
+
+        fig.update_xaxes(type="log")
+
+        fig.write_html(
+            file_path.parent / (file_path.stem + "_log.html"),
+            full_html = full_html,
+            include_plotlyjs = 'cdn',
+        )
+
 def make_series_plot(
                     data_df: pandas.DataFrame,
                     file_path: Path,
@@ -407,6 +425,7 @@ def make_series_plot(
                     error: str = None,
                     font_size: int = None,
                     color_var: str = None,
+                    do_log: bool = True,
                     ):
     if extra_title is None:
         extra_title = ""
@@ -444,6 +463,23 @@ def make_series_plot(
         full_html = full_html,
         include_plotlyjs = 'cdn',
     )
+
+    if do_log:
+        fig.update_yaxes(type="log")
+
+        fig.write_html(
+            file_path.parent / (file_path.stem + "_logy.html"),
+            full_html = full_html,
+            include_plotlyjs = 'cdn',
+        )
+
+        fig.update_xaxes(type="log")
+
+        fig.write_html(
+            file_path.parent / (file_path.stem + "_log.html"),
+            full_html = full_html,
+            include_plotlyjs = 'cdn',
+        )
 
 if __name__ == "__main__":
     raise RuntimeError("Do not try to run this file, it is not a standalone script. It contains several common utilities used by the other scripts")
