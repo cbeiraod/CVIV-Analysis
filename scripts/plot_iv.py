@@ -59,9 +59,6 @@ def plot_iv_task(
 
                 df = pandas.read_csv(Isabel.path_directory / "data.csv")
 
-                for col in df.columns:
-                    df[col] = -df[col]
-
                 utilities.make_series_plot(
                                             data_df = df,
                                             file_path = Isabel.task_path/"Voltage.html",

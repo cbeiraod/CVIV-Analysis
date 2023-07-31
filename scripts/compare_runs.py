@@ -84,11 +84,6 @@ def compare_runs_task(
 
                 df = pandas.concat([df, this_run_df], ignore_index=True)
 
-            for col in df.columns:
-                if col in ["Capacitance [F]", "Conductivity [S]", "Legend"]:
-                    continue
-                df[col] = -df[col]
-
             subtitle = f'<b>{run_info["Sample"]}</b> - Pixel Row <b>{run_info["Pixel Row"]}</b> Column <b>{run_info["Pixel Column"]}</b> - Temperature: <b>{run_info["Temperature"]} C</b>'
             if plot_legend == "TEMPERATURE":
                 subtitle = f'<b>{run_info["Sample"]}</b> - Pixel Row <b>{run_info["Pixel Row"]}</b> Column <b>{run_info["Pixel Column"]}</b>'
@@ -123,8 +118,6 @@ def compare_runs_task(
                                             color_var = "Legend",
                                         )
             if run_info["Run Type"] == utilities.CVIV_Types.CV:
-                df["new"] = 1/(df["Capacitance [F]"]**2)
-
                 utilities.make_line_plot(
                                             data_df = df,
                                             file_path = Felicity.task_path/"CV.html",
@@ -166,14 +159,14 @@ def compare_runs_task(
                                             file_path = Felicity.task_path/"ComV.html",
                                             plot_title = "<b>ComV - 1/C^2 vs Voltage</b>",
                                             x_var = "Bias Voltage [V]",
-                                            y_var = "new",
+                                            y_var = "InverseCSquare",
                                             run_name = Felicity.run_name,
                                             subtitle = subtitle,
                                             extra_title = "",
                                             font_size = font_size,
                                             color_var = "Legend",
                                             labels = {
-                                                "new": "1/C^2"
+                                                "InverseCSquare": "1/C^2"
                                             },
                                         )
 

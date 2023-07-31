@@ -75,13 +75,6 @@ def plot_cv_task(
 
                 df = pandas.read_csv(Alice.path_directory / "data.csv")
 
-                for col in df.columns:
-                    if col in ["Capacitance [F]", "Conductivity [S]"]:
-                        continue
-                    df[col] = -df[col]
-
-                df["new"] = 1/(df["Capacitance [F]"]**2)
-
                 utilities.make_series_plot(
                                             data_df = df,
                                             file_path = Alice.task_path/"Capacitance.html",
@@ -153,14 +146,14 @@ def plot_cv_task(
                                             data_df = df,
                                             file_path = Alice.task_path/"Computed.html",
                                             plot_title = "<b>1/C^2 Over Measurements</b>",
-                                            var = "new",
+                                            var = "InverseCSquare",
                                             run_name = Alice.run_name,
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
                                             do_log = False,
                                             labels = {
-                                                "new": "1/C^2"
+                                                "InverseCSquare": "1/C^2"
                                             },
                                         )
                 utilities.make_line_plot(
@@ -168,13 +161,13 @@ def plot_cv_task(
                                             file_path = Alice.task_path/"ComV.html",
                                             plot_title = "<b>ComV - 1/C^2 vs Voltage</b>",
                                             x_var = "Bias Voltage [V]",
-                                            y_var = "new",
+                                            y_var = "InverseCSquare",
                                             run_name = Alice.run_name,
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
                                             labels = {
-                                                "new": "1/C^2"
+                                                "InverseCSquare": "1/C^2"
                                             },
                                         )
 
