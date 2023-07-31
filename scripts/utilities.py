@@ -430,6 +430,7 @@ def make_line_plot(
                     y_error: str = None,
                     font_size: int = None,
                     color_var: str = None,
+                    symbol_var: str = None,
                     do_log: bool = True,
                     ):
     if extra_title is None:
@@ -447,6 +448,7 @@ def make_line_plot(
         labels = labels,
         title = "{}<br><sup>{}; Run: {}{}</sup>".format(plot_title, subtitle, run_name, extra_title),
         markers=True,
+        symbol=symbol_var,
         #text=var,
         color=color_var,
     )
@@ -496,6 +498,7 @@ def make_series_plot(
                     error: str = None,
                     font_size: int = None,
                     color_var: str = None,
+                    symbol_var: str = None,
                     do_log: bool = True,
                     ):
     if extra_title is None:
@@ -516,6 +519,7 @@ def make_series_plot(
         labels = labels,
         title = "{}<br><sup>{}; Run: {}{}</sup>".format(plot_title, subtitle, run_name, extra_title),
         markers=True,
+        symbol = symbol_var,
         #text=var,
         color=color_var,
     )
