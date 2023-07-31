@@ -24,6 +24,7 @@ from pathlib import Path
 import logging
 import sqlite3
 import pandas
+import datetime
 
 import lip_pps_run_manager as RM
 
@@ -34,7 +35,7 @@ def load_df_task(Pedro: RM.RunManager, db_path: Path, run_name: str, output_path
         with sqlite3.connect(db_path) as sql_conn:
             utilities.enable_foreign_keys(sql_conn)
 
-            run_info_sql = f"SELECT `RunID`,`RunName`,`path`,`type`,`sample`,`pixel row`,`pixel col`,`begin location`,`end location` FROM 'RunInfo' WHERE `RunName`=?;"
+            run_info_sql = f"SELECT `RunID`,`RunName`,`path`,`type`,`sample`,`pixel row`,`pixel col`,`begin location`,`end location`,`start` FROM 'RunInfo' WHERE `RunName`=?;"
             res = sql_conn.execute(run_info_sql, [run_name]).fetchall()
             if len(res) == 0:
                 raise RuntimeError(f"Unable to find information in the database for run {run_name}")
@@ -47,6 +48,7 @@ def load_df_task(Pedro: RM.RunManager, db_path: Path, run_name: str, output_path
             pixel_col = res[0][6]
             begin_location = res[0][7]
             end_location = res[0][8]
+            start = datetime.datetime.fromisoformat(res[0][9])
 
             if not run_file_path.exists() or not run_file_path.is_file():
                 raise RuntimeError(f"Could not find the run file for run {run_name}")
@@ -67,6 +69,24 @@ def load_df_task(Pedro: RM.RunManager, db_path: Path, run_name: str, output_path
                                 skiprows = begin_location + 1,
                                 nrows = end_location - begin_location - 1,
                                  )
+
+            for col in df.columns:
+                if col in ["Capacitance [F]", "Conductivity [S]", "Legend"]:
+                    continue
+                df[col] = -df[col]
+
+            if run_type == utilities.CVIV_Types.CV:
+                df["InverseCSquare"] = 1/(df["Capacitance [F]"]**2)
+
+            tmp = df['Bias Voltage [V]'].diff()
+            tmp.fillna(tmp[1], inplace = True)
+            tmp.loc[tmp == 0] = tmp.shift(-1)
+            df['Ascending'] = (tmp > 0)
+            df['Descending'] = (tmp < 0)
+
+            df['Coarse'] = False
+            if start > datetime.datetime(2023, 8, 1, 0, 0, 0):
+                df['Coarse'].iloc[:20] = True
 
             # df.to_feather(Lilly.path_directory / "data.feather")
             df.to_csv(Lilly.path_directory / "data.csv", index=False)
