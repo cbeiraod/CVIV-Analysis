@@ -75,6 +75,10 @@ def plot_cv_task(
 
                 df = pandas.read_csv(Alice.path_directory / "data.csv")
 
+                color_var = None
+                if len(df["Is Coarse"].unique()) > 1:
+                    color_var = "Is Coarse"
+
                 utilities.make_series_plot(
                                             data_df = df,
                                             file_path = Alice.task_path/"Capacitance.html",
@@ -84,6 +88,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                             do_log = False,
                                         )
                 utilities.make_series_plot(
@@ -95,6 +100,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                             do_log = False,
                                         )
                 utilities.make_series_plot(
@@ -106,6 +112,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                             do_log = False,
                                         )
                 utilities.make_line_plot(
@@ -118,6 +125,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                         )
                 utilities.make_line_plot(
                                             data_df = df,
@@ -129,6 +137,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                         )
                 utilities.make_line_plot(
                                             data_df = df,
@@ -140,6 +149,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                         )
 
                 utilities.make_series_plot(
@@ -151,6 +161,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                             do_log = False,
                                             labels = {
                                                 "InverseCSquare": "1/C^2"
@@ -166,6 +177,7 @@ def plot_cv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                             labels = {
                                                 "InverseCSquare": "1/C^2"
                                             },

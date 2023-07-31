@@ -59,6 +59,10 @@ def plot_iv_task(
 
                 df = pandas.read_csv(Isabel.path_directory / "data.csv")
 
+                color_var = None
+                if len(df["Is Coarse"].unique()) > 1:
+                    color_var = "Is Coarse"
+
                 utilities.make_series_plot(
                                             data_df = df,
                                             file_path = Isabel.task_path/"Voltage.html",
@@ -68,6 +72,7 @@ def plot_iv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                             do_log = False,
                                         )
                 utilities.make_series_plot(
@@ -79,6 +84,7 @@ def plot_iv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                             do_log = False,
                                         )
                 utilities.make_line_plot(
@@ -91,6 +97,7 @@ def plot_iv_task(
                                             subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                             extra_title = observations,
                                             font_size = font_size,
+                                            color_var = color_var,
                                         )
                 if run_type == utilities.CVIV_Types.IV_Two_Probes:
                     df2 = pandas.DataFrame()
@@ -101,6 +108,10 @@ def plot_iv_task(
                     df3['Bias Voltage [V]'] = df['Bias Voltage [V]']
                     df3['Current [A]'] = df['Total Current [A]']
                     df3['loc'] = "Total"
+
+                    if color_var is not None:
+                        df2[color_var] = df[color_var]
+                        df3[color_var] = df[color_var]
 
                     joined_df = pandas.concat([df2, df3])#, ignore_index=True)
 
@@ -113,6 +124,7 @@ def plot_iv_task(
                                                 subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                                 extra_title = observations,
                                                 font_size = font_size,
+                                                color_var = color_var,
                                                 do_log = False,
                                             )
                     utilities.make_line_plot(
@@ -125,6 +137,7 @@ def plot_iv_task(
                                                 subtitle = f"<b>{sample}</b> - Pixel Row <b>{pixel_row}</b> Column <b>{pixel_col}</b>",
                                                 extra_title = observations,
                                                 font_size = font_size,
+                                                color_var = color_var,
                                             )
 
                     utilities.make_series_plot(
@@ -137,6 +150,7 @@ def plot_iv_task(
                                                 extra_title = observations,
                                                 font_size = font_size,
                                                 color_var = "loc",
+                                                symbol_var = color_var,
                                                 labels = {
                                                     "loc": "Measured"
                                                 },
@@ -153,6 +167,7 @@ def plot_iv_task(
                                                 extra_title = observations,
                                                 font_size = font_size,
                                                 color_var = "loc",
+                                                symbol_var = color_var,
                                                 labels = {
                                                     "loc": "Measured"
                                                 }

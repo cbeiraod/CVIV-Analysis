@@ -47,6 +47,8 @@ def compare_runs_task(
                 labels = row['labels']
 
                 this_run_df = pandas.read_csv(output_path / run / "data.csv")
+                if len(this_run_df["Is Coarse"].unique()) > 1:
+                    this_run_df = this_run_df.loc[this_run_df["Is Coarse"] == False]
                 run_info = utilities.get_all_run_info(sql_conn, "RunInfo", run)
 
                 if plot_legend == "DATAFRAME":
