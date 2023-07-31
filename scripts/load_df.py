@@ -84,9 +84,9 @@ def load_df_task(Pedro: RM.RunManager, db_path: Path, run_name: str, output_path
             df['Ascending'] = (tmp > 0)
             df['Descending'] = (tmp < 0)
 
-            df['Coarse'] = False
+            df['Is Coarse'] = False
             if start > datetime.datetime(2023, 8, 1, 0, 0, 0):
-                df['Coarse'].iloc[:20] = True
+                df['Is Coarse'].iloc[:20] = True
 
             # df.to_feather(Lilly.path_directory / "data.feather")
             df.to_csv(Lilly.path_directory / "data.csv", index=False)
