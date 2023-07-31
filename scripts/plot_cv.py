@@ -154,7 +154,7 @@ def plot_cv_task(
 
                 utilities.make_series_plot(
                                             data_df = df,
-                                            file_path = Alice.task_path/"Computed.html",
+                                            file_path = Alice.task_path/"InverseCSquare.html",
                                             plot_title = "<b>1/C^2 Over Measurements</b>",
                                             var = "InverseCSquare",
                                             run_name = Alice.run_name,
@@ -169,8 +169,8 @@ def plot_cv_task(
                                         )
                 utilities.make_line_plot(
                                             data_df = df,
-                                            file_path = Alice.task_path/"ComV.html",
-                                            plot_title = "<b>ComV - 1/C^2 vs Voltage</b>",
+                                            file_path = Alice.task_path/"InverseCSquareV.html",
+                                            plot_title = "<b>InverseCSquareV - 1/C^2 vs Voltage</b>",
                                             x_var = "Bias Voltage [V]",
                                             y_var = "InverseCSquare",
                                             run_name = Alice.run_name,
