@@ -338,6 +338,77 @@ def create_run_info_table(conn: sqlite3.Connection, tableName: str, columns: lis
             if len(res.fetchall()) == 0:  # If the colun does not exist, we have to add it
                 conn.execute(f"ALTER TABLE `{tableName}` ADD `{col}` {colInfo};")
 
+def get_run_info(conn: sqlite3.Connection, tableName: str, runName: str, columns: dict[str, str]):
+    retVal = {}
+
+    colNames = list(columns.keys())
+
+    query = f"SELECT `RunID`,`RunName`,`Observations`"
+    for col in colNames:
+        query += f",`{col}`"
+
+    query += f" FROM '{tableName}' WHERE `RunName`=?;"
+    res = conn.execute(query, [runName]).fetchall()
+
+    if len(res) == 1:
+        retVal['RunID'] = res[0][0]
+        retVal['RunName'] = res[0][1]
+        retVal['Observations'] = res[0][2]
+
+        for idx in range(len(colNames)):
+            if colNames[idx] == "path":
+                retVal[columns[colNames[idx]]] = Path(res[0][3 + idx])
+            elif colNames[idx] == "type":
+                retVal[columns[colNames[idx]]] = CVIV_Types(res[0][3 + idx])
+            else:
+                retVal[columns[colNames[idx]]] = res[0][3 + idx]
+
+    return retVal
+
+def get_all_run_info(conn: sqlite3.Connection, tableName: str, runName: str):
+    return get_run_info(conn, tableName, runName, {
+            "path": "Path",
+            "name": "File Name",
+            "type": "Run Type",
+            "version": "Version",
+            "start": "Start Time",
+            "stop": "Stop Time",
+            "elapsed [s]": "Elapsed Time",
+            "tester": "Tester",
+            "temperature [C]": "Temperature",
+            "I meter": "I meter",
+            "I averaging": "I averaging",
+            "V source": "V source",
+            "V integration time [ms]": "V integration time",
+            "V averaging": "V averaging",
+            "compliance [A]": "Compliance",
+            "ramp up step [V]": "Ramp-up Step",
+            "ramp up delay [s]": "Ramp-up Delay",
+            "ramp down step [V]": "Ramp-down Step",
+            "ramp down delay [s]": "Ramp-down Delay",
+            "V step mode": "V Step Mode",
+            "sample": "Sample",
+            "irradiation flux [p/cm^2]": "Irradiation Flux",
+            "irradiated": "Irradiated",
+            "pixel": "Pixel",
+            "pixel row": "Pixel Row",
+            "pixel col": "Pixel Column",
+            "begin location": "Begin Location",
+            "end location": "End Location",
+            "V start [V]": "V Start",
+            "V stop [V]": "V Stop",
+            "V steps": "V Steps",
+            "SHA256": "SHA256",
+            "MD5": "MD5",
+            "comments": "Comments",
+            "LCR meter": "LCR meter",
+            "LCR frequency [Hz]": "LCR Frequency",
+            "LCR signal level [V]": "LCR Signal Level",
+            "LCR averaging": "LCR averaging",
+            "LCR open correction C [F]": "LCR Open Correction C",
+            "LCR open correction G [S]": "LCR Open Correction G",
+        })
+
 def create_run_backup_table(conn: sqlite3.Connection, tableName: str, runInfoTable: str, logger: logging.Logger):
     res = conn.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}';")
     if len(res.fetchall()) == 0:  # If table does not exist
