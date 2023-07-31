@@ -10,6 +10,9 @@ Script for analysing and processing the CVIV from LGAD measurements.
  * `plot_iv.py` - This script plots the IV curves both for CV runs and IV runs
  * `plot_cv.py` - This script plots the CV curves for CV runs
  * `process_all_runs.py` - This script loads the run list from the run database and then runs the load_df, plot_iv and plot_cv tasks for each run
+ * `compare_runs.py` - This script makes plots comparing runs against each other. The runs must be of the same type
+ * `replot.py` - This script processes a pre-existing run directory and remakes the plots (useful if the plotting scripts have been updated)
+ * `replot_all.py` - This script runs the `replot.py` script on all the subdirectories of a directory
 
 ## Dependencies
 
