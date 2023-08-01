@@ -26,6 +26,7 @@ import enum
 import datetime
 import sqlite3
 import hashlib
+import numpy
 
 import pandas
 
@@ -461,6 +462,105 @@ def make_line_plot(
                 #color="RebeccaPurple"
             )
         )
+
+    fig.write_html(
+        file_path,
+        full_html = full_html,
+        include_plotlyjs = 'cdn',
+    )
+
+    if do_log:
+        fig.update_yaxes(type="log")
+
+        fig.write_html(
+            file_path.parent / (file_path.stem + "_logy.html"),
+            full_html = full_html,
+            include_plotlyjs = 'cdn',
+        )
+
+        fig.update_xaxes(type="log")
+
+        fig.write_html(
+            file_path.parent / (file_path.stem + "_log.html"),
+            full_html = full_html,
+            include_plotlyjs = 'cdn',
+        )
+
+def make_scatter_plot_with_func(
+                    function,
+                    parameters: list[float],
+                    data_df: pandas.DataFrame,
+                    file_path: Path,
+                    plot_title: str,
+                    x_var: str,
+                    y_var: str,
+                    run_name: str,
+                    scatter_name: str = "Data",
+                    function_name: str = "Fit",
+                    labels: dict[str, str] = {},
+                    full_html:bool = False,
+                    subtitle: str = "",
+                    extra_title: str = "",
+                    x_error_var: str = None,
+                    y_error_var: str = None,
+                    font_size: int = None,
+                    do_log: bool = True,
+                    ):
+    if extra_title is None:
+        extra_title = ""
+    if extra_title != "":
+        #extra_title = "<br>" + extra_title
+        extra_title = " - " + extra_title
+
+    fig=go.Figure()
+
+    x_error = None
+    y_error = None
+    if x_error_var is not None:
+        x_error = data_df[x_error_var]
+    if y_error_var is not None:
+        y_error = data_df[y_error_var]
+
+    fig.add_trace(
+        go.Scatter(
+                    name = scatter_name,
+                    x = data_df[x_var],
+                    y = data_df[y_var],
+                    mode = 'markers',
+                    error_x = x_error,
+                    error_y = y_error,
+                   )
+                  )
+
+    xdata = data_df[x_var]
+    X = numpy.linspace(min(xdata), max(xdata), 300)
+    Y = function(X, *parameters)
+    fig.add_trace(
+        go.Scatter(
+                    name = function_name,
+                    x = X,
+                    y = Y,
+                    mode = 'lines'
+                   )
+                  )
+
+    if font_size is not None:
+        fig.update_layout(
+            font=dict(
+                size=font_size,
+            )
+        )
+    fig.update_layout(
+        title = "{}<br><sup>{}; Run: {}{}</sup>".format(plot_title, subtitle, run_name, extra_title)
+    )
+    x_title = x_var
+    y_title = y_var
+    if x_title in labels:
+        x_title = labels[x_title]
+    if y_title in labels:
+        y_title = labels[y_title]
+    fig.update_xaxes(title=x_title)
+    fig.update_yaxes(title=y_title)
 
     fig.write_html(
         file_path,
