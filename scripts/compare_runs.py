@@ -51,7 +51,11 @@ def compare_runs_task(
 
                 this_run_df = pandas.read_csv(output_path / run / "data.csv")
                 if run_info["Run Type"] == utilities.CVIV_Types.CV:
-                    this_run_param_df = pandas.read_csv(output_path / run / "extracted_cv.csv")
+                    file = output_path / run / "extracted_cv.csv"
+                    if file.exists():
+                        this_run_param_df = pandas.read_csv(file)
+                    else:
+                        this_run_param_df = pandas.DataFrame()
                 else:
                     this_run_param_df = pandas.DataFrame()
                 if len(this_run_df["Is Coarse"].unique()) > 1:
