@@ -134,11 +134,17 @@ def extract_cv_params(
 
     left_edge = (min_invcap - middle_fit.intercept)/middle_fit.slope - 4
     left_df = current_df.loc[current_df[voltage_col] < left_edge]
-    left_fit = linregress(x = left_df[voltage_col], y = left_df[invcap_col])
+    if len(left_df) > 2:
+        left_fit = linregress(x = left_df[voltage_col], y = left_df[invcap_col])
+    else:
+        left_fit = None
 
     right_edge = (max_invcap - middle_fit.intercept)/middle_fit.slope + 4
     right_df = current_df.loc[current_df[voltage_col] > right_edge]
-    right_fit = linregress(x = right_df[voltage_col], y = right_df[invcap_col])
+    if len(right_df) > 2:
+        right_fit = linregress(x = right_df[voltage_col], y = right_df[invcap_col])
+    else:
+        right_fit = None
 
     figure_vlines += [{
         "x_val": min_voltage,
@@ -161,10 +167,14 @@ def extract_cv_params(
 
     voltage_edges = [
         0,
-        (middle_fit.intercept - left_fit.intercept)/(left_fit.slope - middle_fit.slope),
-        (right_fit.intercept - middle_fit.intercept)/(middle_fit.slope - right_fit.slope),
+        (min_invcap - middle_fit.intercept)/middle_fit.slope,
+        (max_invcap - middle_fit.intercept)/middle_fit.slope,
         max_voltage,
     ]
+    if left_fit is not None:
+        voltage_edges[1] = (middle_fit.intercept - left_fit.intercept)/(left_fit.slope - middle_fit.slope)
+    if right_fit is not None:
+        voltage_edges[2] = (right_fit.intercept - middle_fit.intercept)/(middle_fit.slope - right_fit.slope)
 
 
     fig = go.Figure()
@@ -191,44 +201,47 @@ def extract_cv_params(
                    )
                   )
 
-    left_X = numpy.linspace(voltage_edges[0], voltage_edges[1], 300)
-    left_Y = left_X * left_fit.slope + left_fit.intercept
-    fig.add_trace(
-        go.Scatter(
-                    name = "Left Fit",
-                    x = left_X,
-                    y = left_Y,
-                    mode = 'lines',
-                    hoverinfo = "skip",
-                    line = dict(color = left_color),
-                   )
-                  )
+    if left_fit is not None:
+        left_X = numpy.linspace(voltage_edges[0], voltage_edges[1], 300)
+        left_Y = left_X * left_fit.slope + left_fit.intercept
+        fig.add_trace(
+            go.Scatter(
+                        name = "Left Fit",
+                        x = left_X,
+                        y = left_Y,
+                        mode = 'lines',
+                        hoverinfo = "skip",
+                        line = dict(color = left_color),
+                    )
+                    )
 
-    middle_X = numpy.linspace(voltage_edges[1], voltage_edges[2], 300)
-    middle_Y = middle_X * middle_fit.slope + middle_fit.intercept
-    fig.add_trace(
-        go.Scatter(
-                    name = "Middle Fit",
-                    x = middle_X,
-                    y = middle_Y,
-                    mode = 'lines',
-                    hoverinfo = "skip",
-                    line = dict(color = middle_color),
-                   )
-                  )
+    if middle_fit is not None:
+        middle_X = numpy.linspace(voltage_edges[1], voltage_edges[2], 300)
+        middle_Y = middle_X * middle_fit.slope + middle_fit.intercept
+        fig.add_trace(
+            go.Scatter(
+                        name = "Middle Fit",
+                        x = middle_X,
+                        y = middle_Y,
+                        mode = 'lines',
+                        hoverinfo = "skip",
+                        line = dict(color = middle_color),
+                    )
+                    )
 
-    right_X = numpy.linspace(voltage_edges[2], voltage_edges[3], 300)
-    right_Y = right_X * right_fit.slope + right_fit.intercept
-    fig.add_trace(
-        go.Scatter(
-                    name = "Right Fit",
-                    x = right_X,
-                    y = right_Y,
-                    mode = 'lines',
-                    hoverinfo = "skip",
-                    line = dict(color = right_color),
-                   )
-                  )
+    if right_fit is not None:
+        right_X = numpy.linspace(voltage_edges[2], voltage_edges[3], 300)
+        right_Y = right_X * right_fit.slope + right_fit.intercept
+        fig.add_trace(
+            go.Scatter(
+                        name = "Right Fit",
+                        x = right_X,
+                        y = right_Y,
+                        mode = 'lines',
+                        hoverinfo = "skip",
+                        line = dict(color = right_color),
+                    )
+                    )
 
     if font_size is not None:
         fig.update_layout(
@@ -304,7 +317,7 @@ def extract_parameters_task(
                 ascending_df = fine_df.loc[fine_df['Ascending'] == True]
                 descending_df = fine_df.loc[fine_df['Descending'] == True]
 
-                if len(fine_df) > 0:
+                if len(fine_df) > 20:
                     # Extract IV parameters
                     if run_type == utilities.CVIV_Types.IV_Two_Probes:
                         pass
