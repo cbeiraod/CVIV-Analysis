@@ -42,32 +42,51 @@ def compare_runs_task(
     with Federico.handle_task("compare_runs", drop_old_data=True) as Felicity:
         with sqlite3.connect(db_path) as sql_conn:
             df = pandas.DataFrame()
+            param_df = pandas.DataFrame()
             for index, row in run_df.iterrows():
                 run = row['Runs']
                 labels = row['labels']
 
+                run_info = utilities.get_all_run_info(sql_conn, "RunInfo", run)
+
                 this_run_df = pandas.read_csv(output_path / run / "data.csv")
+                if run_info["Run Type"] == utilities.CVIV_Types.CV:
+                    this_run_param_df = pandas.read_csv(output_path / run / "extracted_cv.csv")
+                else:
+                    this_run_param_df = pandas.DataFrame()
                 if len(this_run_df["Is Coarse"].unique()) > 1:
                     this_run_df = this_run_df.loc[this_run_df["Is Coarse"] == False]
-                run_info = utilities.get_all_run_info(sql_conn, "RunInfo", run)
+
+                legend_display = None
 
                 if plot_legend == "DATAFRAME":
                     this_run_df['Legend'] = labels
+                    this_run_param_df['Legend'] = labels
+                    legend_display = "Category"
                 else:
                     if plot_legend == "TEMPERATURE":
                         this_run_df['Legend'] = f'{run_info["Temperature"]} C'
+                        this_run_param_df['Legend'] = run_info["Temperature"]
+                        legend_display = "Temperature [C]"
                     elif plot_legend == "PIXEL":
                         this_run_df['Legend'] = f'Pixel {run_info["Pixel"]}'
+                        this_run_param_df['Legend'] = f'Pixel {run_info["Pixel"]}'
+                        legend_display = "Pixel"
                     elif plot_legend == "SAMPLE":
                         this_run_df['Legend'] = f'{run_info["Sample"]}'
+                        this_run_param_df['Legend'] = f'{run_info["Sample"]}'
+                        legend_display = "Sample"
                     elif plot_legend == "FREQUENCY":
                         freq = run_info["LCR Frequency"]
                         if freq is None:
                             freq = "NA"
                             this_run_df['Legend'] = f'{freq}'
+                            this_run_param_df['Legend'] = None
                         else:
                             freq /= 1000.
                             this_run_df['Legend'] = f'{freq} kHz'
+                            this_run_param_df['Legend'] = freq
+                        legend_display = "Frequency [kHz]"
                     elif plot_legend == "IRRADIATION":
                         irrad = run_info["Irradiation Flux"]
                         if irrad is None:
@@ -75,16 +94,25 @@ def compare_runs_task(
                         else:
                             irrad /= 1000.
                         this_run_df['Legend'] = f'{irrad} p/cm^2'
+                        this_run_param_df['Legend'] = irrad
+                        legend_display = "Irradiation [p/cm^2]"
                     elif plot_legend == "IAVERAGING":
                         this_run_df['Legend'] = f'{run_info["I averaging"]} I Averages'
+                        this_run_param_df['Legend'] = run_info["I averaging"]
+                        legend_display = "I Averages"
                     elif plot_legend == "VAVERAGING":
                         this_run_df['Legend'] = f'{run_info["V averaging"]} V Averages'
+                        this_run_param_df['Legend'] = run_info["V averaging"]
+                        legend_display = "V Averages"
                     elif plot_legend == "TIME":
                         this_run_df['Legend'] = datetime.datetime.fromisoformat(run_info["Start Time"])
+                        this_run_param_df['Legend'] = datetime.datetime.fromisoformat(run_info["Start Time"])
+                        legend_display = "Time"
                     else:
                         raise RuntimeError(f"Unknown type of legend: {plot_legend}")
 
                 df = pandas.concat([df, this_run_df], ignore_index=True)
+                param_df = pandas.concat([param_df, this_run_param_df], ignore_index=True)
 
             subtitle = f'<b>{run_info["Sample"]}</b> - Pixel Row <b>{run_info["Pixel Row"]}</b> Column <b>{run_info["Pixel Column"]}</b> - Temperature: <b>{run_info["Temperature"]} C</b>'
             if plot_legend == "TEMPERATURE":
@@ -169,6 +197,40 @@ def compare_runs_task(
                                             color_var = "Legend",
                                             labels = {
                                                 "InverseCSquare": "1/C^2"
+                                            },
+                                        )
+                utilities.make_line_plot(
+                                            data_df = param_df,
+                                            file_path = Felicity.task_path/"fullDepletionVoltage.html",
+                                            plot_title = "<b>Full Bulk Depletion Voltage Evolution</b>",
+                                            x_var = "Legend",
+                                            y_var = "fullDepletionVoltage",
+                                            run_name = Felicity.run_name,
+                                            subtitle = subtitle,
+                                            extra_title = "",
+                                            font_size = font_size,
+                                            color_var = "tag1",
+                                            labels = {
+                                                "tag1": "Data",
+                                                "fullDepletionVoltage": "V_{fd}",
+                                                "Legend": legend_display,
+                                            },
+                                        )
+                utilities.make_line_plot(
+                                            data_df = param_df,
+                                            file_path = Felicity.task_path/"gainLayerDepletionVoltage.html",
+                                            plot_title = "<b>Gain Layer Depletion Voltage Evolution</b>",
+                                            x_var = "Legend",
+                                            y_var = "gainLayerDepletionVoltage",
+                                            run_name = Felicity.run_name,
+                                            subtitle = subtitle,
+                                            extra_title = "",
+                                            font_size = font_size,
+                                            color_var = "tag1",
+                                            labels = {
+                                                "tag1": "Data",
+                                                "gainLayerDepletionVoltage": "V_{gl}",
+                                                "Legend": legend_display,
                                             },
                                         )
 
