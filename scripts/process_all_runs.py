@@ -31,6 +31,7 @@ import utilities
 from load_df import script_main as load_df
 from plot_iv import script_main as plot_iv
 from plot_cv import script_main as plot_cv
+from extract_parameters import script_main as extract_parameters
 
 def script_main(
                 db_path: Path,
@@ -73,6 +74,7 @@ def script_main(
 
         plot_iv(db_path=db_path, run_path=run_path, font_size=font_size)
         plot_cv(db_path=db_path, run_path=run_path, font_size=font_size)
+        extract_parameters(db_path=db_path, run_path=run_path, font_size=font_size)
 
 
 def main():
