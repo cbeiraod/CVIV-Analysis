@@ -366,7 +366,6 @@ def extract_parameters_task(
                             Catarina.path_directory / "extracted_cv.csv",
                             index = False,
                         )
-                        print(df)
 
 
 def script_main(
