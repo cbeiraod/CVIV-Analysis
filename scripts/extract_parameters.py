@@ -228,6 +228,36 @@ def extract_cv_params(
                         line = dict(color = middle_color),
                     )
                     )
+        fig.add_annotation(
+            x=middle_X[0],
+            y=middle_Y[0],
+            text='V_{{gl}} = {:.2f}'.format(middle_X[0]),
+            showarrow=True,
+            arrowhead=1,
+            arrowsize=2,
+            bordercolor="#c7c7c7",
+            borderwidth=2,
+            borderpad=4,
+            bgcolor="#ff7f0e",
+            opacity=0.8,
+            ax=60,
+            ay=30,
+            )
+        fig.add_annotation(
+            x=middle_X[-1],
+            y=middle_Y[-1],
+            text='V_{{fd}} = {:.2f}'.format(middle_X[-1]),
+            showarrow=True,
+            arrowhead=1,
+            arrowsize=2,
+            bordercolor="#c7c7c7",
+            borderwidth=2,
+            borderpad=4,
+            bgcolor="#ff7f0e",
+            opacity=0.8,
+            ax=-60,
+            ay=-30,
+            )
 
     if right_fit is not None:
         right_X = numpy.linspace(voltage_edges[2], voltage_edges[3], 300)
