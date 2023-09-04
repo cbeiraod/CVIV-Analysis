@@ -76,13 +76,14 @@ def script_main(
                     for idx in range(len(run_list)):
                         runInfo = run_list[idx]
 
-                        find_sql = f"SELECT `RunName`,`path`,`name`,`SHA256`,`MD5` FROM `{runInfoTable}` WHERE `path`='{runInfo['path']}';"
+                        find_sql = f"SELECT `RunName`,`path`,`name`,`SHA256`,`MD5` FROM `{runInfoTable}` WHERE `name`='{runInfo['name']}';"
                         res = sql_conn.execute(find_sql).fetchall()
                         if len(res) > 0:
                             res = res[0]
                             matches = True
                             if runInfo['path'] != res[1]:
-                                matches = False
+                                print("Path does not match, but this could be due to running from a different computer or user...")
+                                #matches = False
                             if runInfo['name'] != res[2]:
                                 matches = False
                             if runInfo['SHA256'] != res[3]:
@@ -93,7 +94,7 @@ def script_main(
                             if matches:
                                 continue
                             else:
-                                raise RuntimeError(f"Had a matching path, but the other parameters do not match... run {runInfo['path']}")
+                                raise RuntimeError(f"Had a matching measurement name, but the other parameters do not match... name {runInfo['name']}")
 
                         column_str = "'RunName'"
                         values_str = "?"
