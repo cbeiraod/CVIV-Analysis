@@ -35,6 +35,7 @@ from extract_parameters import script_main as extract_parameters
 
 def script_main(
                 db_path: Path,
+                backup_path: Path,
                 output_path: Path,
                 reload_data: bool = False,
                 font_size: int = 18,
@@ -69,6 +70,7 @@ def script_main(
                     db_path=db_path,
                     run_name=run_name,
                     output_path=output_path,
+                    backup_path=backup_path,
                     already_exists=already_exists,
                     )
 
@@ -94,6 +96,15 @@ def main():
         help = 'Path to the database directory, where the run database is placed. Default: ./data',
         default = "./data",
         dest = 'db_path',
+    )
+    parser.add_argument(
+        '-b',
+        '--backupPath',
+        metavar = 'PATH',
+        type = Path,
+        help = 'Path to the data backup directory. If not set, a sub-directory in the database directory is assumed.',
+        #required = True,
+        dest = 'backup_path',
     )
     parser.add_argument(
         '-o',
@@ -161,13 +172,19 @@ def main():
     if not db_path.exists() or not db_path.is_file():
         raise RuntimeError("The database file does not exist")
 
+    backup_path: Path = args.backup_path
+    # If the backup path is not set:
+    if backup_path is None:
+        backup_path = db_path / 'backup'
+    backup_path = backup_path.absolute()
+
     output_path: Path = args.output_path
     if not output_path.exists() or not output_path.is_dir():
         logging.error("You must define a valid data output path")
         exit(1)
     output_path = output_path.absolute()
 
-    script_main(db_path, output_path, args.reload, args.font_size)
+    script_main(db_path, backup_path, output_path, args.reload, args.font_size)
 
 if __name__ == "__main__":
     main()

@@ -99,6 +99,7 @@ def script_main(
                 db_path: Path,
                 run_name: str,
                 output_path: Path,
+                backup_path: Path,
                 already_exists: bool = False,
                 ):
     logger = logging.getLogger('load_df')
@@ -107,13 +108,25 @@ def script_main(
     with sqlite3.connect(db_path) as sql_conn:
         utilities.enable_foreign_keys(sql_conn)
 
-        run_info_sql = f"SELECT `RunName`,`path` FROM 'RunInfo' WHERE `RunName`=?;"
+        run_info_sql = f"SELECT `RunName`,`path`,`type`,`name` FROM 'RunInfo' WHERE `RunName`=?;"
         res = sql_conn.execute(run_info_sql, [run_name]).fetchall()
 
         if len(res) > 0:
             run_file_path = Path(res[0][1])
             if not run_file_path.exists() or not run_file_path.is_file():
-                raise RuntimeError(f"The original run file ({run_file_path}) is no longer available, please check.")
+                orig_run_file_path = run_file_path
+                extension = "dat"
+                if res[0][2] == utilities.CVIV_Types.IV or res[0][2] == utilities.CVIV_Types.IV_Two_Probes:
+                    extension = 'iv'
+                elif res[0][2] == utilities.CVIV_Types.CV:
+                    extension = 'cv'
+                run_file_path = backup_path / (res[0][1] + "." + extension)
+                if not run_file_path.exists() or not run_file_path.is_file():
+                    print(f"The original run file ({orig_run_file_path}) is no longer available, and the backup file ({run_file_path}) could not be found. Recreating the backup file from database.")
+                    # TODO: write the code to recreate the datafile from the database backup
+
+                    if not run_file_path.exists() or not run_file_path.is_file():
+                        raise RuntimeError(f"Unable to recreate the backup run file ({run_file_path}).")
     if run_file_path is None:
         raise RuntimeError(f"Could not find a run file in the run database for run {run_name}")
 
@@ -139,6 +152,15 @@ def main():
         help = 'Path to the database directory, where the run database is placed. Default: ./data',
         default = "./data",
         dest = 'db_path',
+    )
+    parser.add_argument(
+        '-b',
+        '--backupPath',
+        metavar = 'PATH',
+        type = Path,
+        help = 'Path to the data backup directory. If not set, a sub-directory in the database directory is assumed.',
+        #required = True,
+        dest = 'backup_path',
     )
     parser.add_argument(
         '-o',
@@ -199,13 +221,19 @@ def main():
     if not db_path.exists() or not db_path.is_file():
         raise RuntimeError("The database file does not exist")
 
+    backup_path: Path = args.backup_path
+    # If the backup path is not set:
+    if backup_path is None:
+        backup_path = db_path / 'backup'
+    backup_path = backup_path.absolute()
+
     output_path: Path = args.output_path
     if not output_path.exists() or not output_path.is_dir():
         logging.error("You must define a valid data output path")
         exit(1)
     output_path = output_path.absolute()
 
-    script_main(db_path, args.run, output_path)
+    script_main(db_path, args.run, output_path, backup_path)
 
 if __name__ == "__main__":
     main()
