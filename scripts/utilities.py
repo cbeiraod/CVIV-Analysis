@@ -188,8 +188,10 @@ def get_cviv_metadata(file_path: Path, logger: logging.Logger):
             metadata['V stop [V]']  = float(set_voltage[1])
             metadata['V steps']     = int(set_voltage[2])
         elif metadata['V step mode'] == 'from file':
-            # No action needed for "from file"
-            pass
+            # No action needed for "from file", but empty values need to be added so that the columns are created
+            metadata['V start [V]'] = None
+            metadata['V stop [V]']  = None
+            metadata['V steps']     = None
         else:
             raise RuntimeError(f'Unknown voltage step mode ({metadata["V step mode"]}), in run {str(file_path)}')
 
