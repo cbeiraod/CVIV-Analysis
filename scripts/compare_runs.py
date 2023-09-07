@@ -80,6 +80,10 @@ def compare_runs_task(
                         this_run_df['Legend'] = f'{run_info["Sample"]}'
                         this_run_param_df['Legend'] = f'{run_info["Sample"]}'
                         legend_display = "Sample"
+                    elif plot_legend == "SAMPLEPIXEL":
+                        this_run_df['Legend'] = f'{run_info["Sample"]} - Pixel {run_info["Pixel"]}'
+                        this_run_param_df['Legend'] = f'{run_info["Sample"]} - Pixel {run_info["Pixel"]}'
+                        legend_display = "Sample - Pixel"
                     elif plot_legend == "FREQUENCY":
                         freq = run_info["LCR Frequency"]
                         if freq is None:
@@ -125,6 +129,8 @@ def compare_runs_task(
                 subtitle = f'<b>{run_info["Sample"]}</b> - Temperature: <b>{run_info["Temperature"]} C</b>'
             elif plot_legend == "SAMPLE":
                 subtitle = f'Pixel Row <b>{run_info["Pixel Row"]}</b> Column <b>{run_info["Pixel Column"]}</b> - Temperature: <b>{run_info["Temperature"]} C</b>'
+            elif plot_legend == "SAMPLEPIXEL":
+                subtitle = f'Temperature: <b>{run_info["Temperature"]} C</b>'
 
             utilities.make_line_plot(
                                         data_df = df,
@@ -345,7 +351,7 @@ def main():
         metavar = 'OPTION',
         type = str,
         help = 'Value to use for the legend of each run. Defaul: FILE',
-        choices = ["FILE","TIME","TEMPERATURE","PIXEL","SAMPLE","FREQUENCY","IRRADIATION","IAVERAGING","VAVERAGING"],
+        choices = ["FILE","TIME","TEMPERATURE","PIXEL","SAMPLE","SAMPLEPIXEL","FREQUENCY","IRRADIATION","IAVERAGING","VAVERAGING"],
         default = "FILE",
         dest = 'plot_legend',
     )
