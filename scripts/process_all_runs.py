@@ -51,6 +51,7 @@ def script_main(
 
     for runInfo in res:
         run_name: str = runInfo[0]
+        logger.info(f"Processing run {run_name}")
 
         run_path = output_path / run_name
         already_exists = False
