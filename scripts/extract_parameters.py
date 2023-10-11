@@ -420,6 +420,7 @@ def script_main(
 
     run_name = run_path.name
 
+    """
     run_file_path = None
     with sqlite3.connect(db_path) as sql_conn:
         utilities.enable_foreign_keys(sql_conn)
@@ -433,6 +434,7 @@ def script_main(
                 raise RuntimeError(f"The original run file ({run_file_path}) is no longer available, please check.")
     if run_file_path is None:
         raise RuntimeError(f"Could not find a run file in the run database for run {run_name}")
+    """
 
     with RM.RunManager(run_path) as Joana:
         Joana.create_run(raise_error=False)
