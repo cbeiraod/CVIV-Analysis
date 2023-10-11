@@ -30,7 +30,7 @@ import lip_pps_run_manager as RM
 
 import utilities
 
-def load_df_task(Pedro: RM.RunManager, db_path: Path, run_name: str, output_path: Path):
+def load_df_task(Pedro: RM.RunManager, db_path: Path, run_name: str, output_path: Path, backup_path: Path):
     with Pedro.handle_task("load_df_task", drop_old_data=True) as Lilly:
         with sqlite3.connect(db_path) as sql_conn:
             utilities.enable_foreign_keys(sql_conn)
@@ -49,6 +49,15 @@ def load_df_task(Pedro: RM.RunManager, db_path: Path, run_name: str, output_path
             begin_location = res[0][7]
             end_location = res[0][8]
             start = datetime.datetime.fromisoformat(res[0][9])
+
+            if not run_file_path.exists() or not run_file_path.is_file():
+                orig_run_file_path = run_file_path
+                extension = "dat"
+                if run_type == utilities.CVIV_Types.IV or run_type == utilities.CVIV_Types.IV_Two_Probes:
+                    extension = 'iv'
+                elif run_type == utilities.CVIV_Types.CV:
+                    extension = 'cv'
+                run_file_path = backup_path / (res[0][1] + "." + extension)
 
             if not run_file_path.exists() or not run_file_path.is_file():
                 raise RuntimeError(f"Could not find the run file for run {run_name}")
@@ -104,8 +113,6 @@ def script_main(
                 ):
     logger = logging.getLogger('load_df')
 
-    print(backup_path)
-
     run_file_path = None
     with sqlite3.connect(db_path) as sql_conn:
         utilities.enable_foreign_keys(sql_conn)
@@ -113,18 +120,20 @@ def script_main(
         run_info_sql = f"SELECT `RunName`,`path`,`type`,`name` FROM 'RunInfo' WHERE `RunName`=?;"
         res = sql_conn.execute(run_info_sql, [run_name]).fetchall()
 
+        if not backup_path.exists():
+            backup_path.mkdir()
+
         if len(res) > 0:
             run_file_path = Path(res[0][1])
             if not run_file_path.exists() or not run_file_path.is_file():
                 orig_run_file_path = run_file_path
                 extension = "dat"
-                if res[0][2] == utilities.CVIV_Types.IV or res[0][2] == utilities.CVIV_Types.IV_Two_Probes:
+                if res[0][2] == utilities.CVIV_Types.IV.value or res[0][2] == utilities.CVIV_Types.IV_Two_Probes.value:
                     extension = 'iv'
-                elif res[0][2] == utilities.CVIV_Types.CV:
+                elif res[0][2] == utilities.CVIV_Types.CV.value:
                     extension = 'cv'
-                run_file_path = backup_path / (res[0][1] + "." + extension)
+                run_file_path = backup_path / (res[0][0] + "." + extension)
                 if not run_file_path.exists() or not run_file_path.is_file():
-                    print(backup_path)
                     print(f"The original run file ({orig_run_file_path}) is no longer available, and the backup file ({run_file_path}) could not be found. Recreating the backup file from database.")
                     # TODO: write the code to recreate the datafile from the database backup
 
@@ -136,7 +145,7 @@ def script_main(
     with RM.RunManager(output_path / run_name) as William:
         William.create_run(raise_error=not already_exists)
 
-        load_df_task(William, db_path, run_name, output_path)
+        load_df_task(William, db_path, run_name, output_path, backup_path)
 
 def main():
     import argparse
