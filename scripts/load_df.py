@@ -113,11 +113,11 @@ def script_main(
                 ):
     logger = logging.getLogger('load_df')
 
-    run_file_path = None
+    run_file_path: Path = None
     with sqlite3.connect(db_path) as sql_conn:
         utilities.enable_foreign_keys(sql_conn)
 
-        run_info_sql = f"SELECT `RunName`,`path`,`type`,`name` FROM 'RunInfo' WHERE `RunName`=?;"
+        run_info_sql = f"SELECT `RunName`,`path`,`type`,`name`,`RunID` FROM 'RunInfo' WHERE `RunName`=?;"
         res = sql_conn.execute(run_info_sql, [run_name]).fetchall()
 
         if not backup_path.exists():
@@ -135,7 +135,10 @@ def script_main(
                 run_file_path = backup_path / (res[0][0] + "." + extension)
                 if not run_file_path.exists() or not run_file_path.is_file():
                     print(f"The original run file ({orig_run_file_path}) is no longer available, and the backup file ({run_file_path}) could not be found. Recreating the backup file from database.")
-                    # TODO: write the code to recreate the datafile from the database backup
+
+                    res = sql_conn.execute("SELECT `Data` FROM 'runBackup' WHERE `RunID`=?;", [res[0][4]]).fetchall()
+                    with run_file_path.open("wb") as file:
+                        file.write(res[0][0])
 
                     if not run_file_path.exists() or not run_file_path.is_file():
                         raise RuntimeError(f"Unable to recreate the backup run file ({run_file_path}).")
