@@ -104,6 +104,8 @@ def script_main(
                 ):
     logger = logging.getLogger('load_df')
 
+    print(backup_path)
+
     run_file_path = None
     with sqlite3.connect(db_path) as sql_conn:
         utilities.enable_foreign_keys(sql_conn)
@@ -122,6 +124,7 @@ def script_main(
                     extension = 'cv'
                 run_file_path = backup_path / (res[0][1] + "." + extension)
                 if not run_file_path.exists() or not run_file_path.is_file():
+                    print(backup_path)
                     print(f"The original run file ({orig_run_file_path}) is no longer available, and the backup file ({run_file_path}) could not be found. Recreating the backup file from database.")
                     # TODO: write the code to recreate the datafile from the database backup
 
@@ -224,7 +227,7 @@ def main():
     backup_path: Path = args.backup_path
     # If the backup path is not set:
     if backup_path is None:
-        backup_path = db_path / 'backup'
+        backup_path = db_path.parent / 'backup'
     backup_path = backup_path.absolute()
 
     output_path: Path = args.output_path

@@ -176,7 +176,7 @@ def main():
     backup_path: Path = args.backup_path
     # If the backup path is not set:
     if backup_path is None:
-        backup_path = db_path / 'backup'
+        backup_path = db_path.parent / 'backup'
     backup_path = backup_path.absolute()
 
     output_path: Path = args.output_path
