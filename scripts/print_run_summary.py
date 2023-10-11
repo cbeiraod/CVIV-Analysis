@@ -32,12 +32,12 @@ def script_main(
                 ):
     logger = logging.getLogger('print_run_summary')
 
-    print_string = "{runId}: {runName} - {start} : Sample {sample} : Pixel {pixel_row} {pixel_col} : {run_type} : {observations}"
+    print_string = "{runId}: {runName} - {start} : Sample {sample} : Pixel {pixel_row} {pixel_col} : {temperature} C : {run_type} : {observations}"
 
     with sqlite3.connect(db_path) as sql_conn:
         utilities.enable_foreign_keys(sql_conn)
 
-        run_info_sql = f"SELECT `RunID`,`RunName`,`path`,`type`,`sample`,`pixel row`,`pixel col`,`begin location`,`end location`,`Observations`,`start`,`stop` FROM 'RunInfo';"
+        run_info_sql = f"SELECT `RunID`,`RunName`,`path`,`type`,`sample`,`pixel row`,`pixel col`,`begin location`,`end location`,`Observations`,`start`,`stop`,`temperature [C]` FROM 'RunInfo';"
         res = sql_conn.execute(run_info_sql).fetchall()
 
         for runInfo in res:
@@ -54,6 +54,7 @@ def script_main(
                 "observations": runInfo[9],
                 "start" : runInfo[10],
                 "stop" : runInfo[11],
+                "temperature" : runInfo[12],
             }
 
             print(print_string.format(**runDict))
