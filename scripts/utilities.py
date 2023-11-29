@@ -470,6 +470,11 @@ def make_line_plot(
         full_html = full_html,
         include_plotlyjs = 'cdn',
     )
+    fig.write_image(
+        file_path.with_suffix('.pdf'),
+        width = 800,
+        height = 600,
+    )
 
     if do_log:
         fig.update_yaxes(type="log")
@@ -569,6 +574,11 @@ def make_scatter_plot_with_func(
         full_html = full_html,
         include_plotlyjs = 'cdn',
     )
+    fig.write_image(
+        file_path.with_suffix('.pdf'),
+        width = 800,
+        height = 600,
+    )
 
     if do_log:
         fig.update_yaxes(type="log")
@@ -639,6 +649,11 @@ def make_series_plot(
         file_path,
         full_html = full_html,
         include_plotlyjs = 'cdn',
+    )
+    fig.write_image(
+        file_path.with_suffix('.pdf'),
+        width = 800,
+        height = 600,
     )
 
     if do_log:
