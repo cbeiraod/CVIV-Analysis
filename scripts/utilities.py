@@ -151,7 +151,7 @@ def get_cviv_metadata(file_path: Path, logger: logging.Logger):
                         info = lines[line_idx][:-1].split(' ')
                         metadata['pixel row'] = info[1]
                         metadata['pixel col'] = info[2]
-                    elif lines[line_idx][:-1] == 'PPS pre-irrad' or lines[line_idx][:-1] == 'FBK sample - pre-irrad':
+                    elif lines[line_idx][:-1] == 'PPS pre-irrad' or lines[line_idx][:-1] == 'FBK sample - pre-irrad' or lines[line_idx][:-1] == 'PPS TI':
                         metadata['irradiation flux [p/cm^2]'] = 0.0
                         metadata['irradiated'] = False
                     elif lines[line_idx][:-1] == 'IRRAD 1E16':
