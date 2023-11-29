@@ -96,9 +96,12 @@ def script_main(
                             else:
                                 raise RuntimeError(f"Had a matching measurement name, but the other parameters do not match... name {runInfo['name']}")
 
+                        count_sql = f"SELECT COUNT(RunName) FROM `{runInfoTable}`"
+                        next_idx = sql_conn.execute(count_sql).fetchall()[0][0]
+
                         column_str = "'RunName'"
                         values_str = "?"
-                        values = ['CVIV-Run{:04d}'.format(idx)]
+                        values = ['CVIV-Run{:04d}'.format(next_idx)]
 
                         for key in runInfo:
                             column_str += f",'{key}'"
