@@ -36,3 +36,4 @@ Install the libraries, after activating the venv if using one, with:
  * `python -m pip install pandas`
  * `python -m pip install pyarrow`
  * `python -m pip install scipy`
+ * `python -m pip install kaleido`
