@@ -32,12 +32,13 @@ def script_main(
                 ):
     logger = logging.getLogger('print_run_summary')
 
-    print_string = "{runId}: {runName} - {start} : Sample {sample} : Pixel {pixel_row} {pixel_col} : {temperature} C : {run_type} : {observations}"
+    print_string_iv = "{runId}: {runName} - {start} : Sample {sample} : Pixel {pixel_row} {pixel_col} : {temperature} C : {run_type} : {observations}"
+    print_string_cv = "{runId}: {runName} - {start} : Sample {sample} : Pixel {pixel_row} {pixel_col} : {temperature} C : {run_type} {frequency} Hz : {observations}"
 
     with sqlite3.connect(db_path) as sql_conn:
         utilities.enable_foreign_keys(sql_conn)
 
-        run_info_sql = f"SELECT `RunID`,`RunName`,`path`,`type`,`sample`,`pixel row`,`pixel col`,`begin location`,`end location`,`Observations`,`start`,`stop`,`temperature [C]` FROM 'RunInfo';"
+        run_info_sql = f"SELECT `RunID`,`RunName`,`path`,`type`,`sample`,`pixel row`,`pixel col`,`begin location`,`end location`,`Observations`,`start`,`stop`,`temperature [C]`,`LCR frequency [Hz]` FROM 'RunInfo';"
         res = sql_conn.execute(run_info_sql).fetchall()
 
         for runInfo in res:
@@ -56,6 +57,14 @@ def script_main(
                 "stop" : runInfo[11],
                 "temperature" : runInfo[12],
             }
+
+            if runDict["run_type"] == utilities.CVIV_Types.IV or runDict["run_type"] == utilities.CVIV_Types.IV_Two_Probes:
+                print_string = print_string_iv
+            elif runDict["run_type"] == utilities.CVIV_Types.CV:
+                runDict["frequency"] = runInfo[13]
+                print_string = print_string_cv
+            else:
+                print_string = "{runId}: {runName}"
 
             print(print_string.format(**runDict))
 
