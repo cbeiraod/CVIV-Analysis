@@ -59,7 +59,11 @@ def compare_runs_task(
                 else:
                     this_run_param_df = pandas.DataFrame()
                 if len(this_run_df["Is Coarse"].unique()) > 1:
+                    this_run_coarse_df = this_run_df.loc[this_run_df["Is Coarse"] == True]
                     this_run_df = this_run_df.loc[this_run_df["Is Coarse"] == False]
+
+                    if len(this_run_df) < 20:
+                        this_run_df = this_run_coarse_df
 
                 legend_display = None
 
@@ -280,7 +284,7 @@ def script_main(
         all_runs_found_on_disk = True
         for run in run_df["Runs"]:
             run_path = output_path / run
-            if not run_path.exists or not run_path.is_dir():
+            if not run_path.exists() or not run_path.is_dir():
                 all_runs_found_on_disk = False
                 logger.debug(f"The run {run} has not yet been loaded into a dataframe")
         if not all_runs_found_on_disk:
