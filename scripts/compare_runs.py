@@ -62,7 +62,7 @@ def compare_runs_task(
                     this_run_coarse_df = this_run_df.loc[this_run_df["Is Coarse"] == True]
                     this_run_df = this_run_df.loc[this_run_df["Is Coarse"] == False]
 
-                    if len(this_run_df) < 20:
+                    if len(this_run_df) < 20 and len(this_run_coarse_df) > 0:
                         this_run_df = this_run_coarse_df
 
                 legend_display = None
