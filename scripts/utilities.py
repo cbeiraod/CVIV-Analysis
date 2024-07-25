@@ -159,10 +159,18 @@ def get_cviv_metadata(file_path: Path, logger: logging.Logger):
                 while lines[line_idx + 1][0] != ':':
                     line_idx += 1
                     if lines[line_idx][:6] == 'pixel ':
-                        metadata['pixel'] = lines[line_idx][6:-1]
-                        info = lines[line_idx][:-1].split(' ')
-                        metadata['pixel row'] = info[1]
-                        metadata['pixel col'] = info[2]
+                        pixel_str = lines[line_idx][6:-1]
+                        #metadata['pixel'] = pixel_str
+                        info = pixel_str.split(' ')
+                        metadata['pixel row'] = int(info[0])
+                        metadata['pixel col'] = int(info[1])
+                        # Fix row and col for Perugia measurements
+                        if metadata['type'] == CVIV_Types.IV_Perugia or metadata['type'] == CVIV_Types.CV_Perugia:
+                            row = metadata['pixel row']
+                            col = metadata['pixel col']
+                            metadata['pixel col'] = row
+                            metadata['pixel row'] = col
+                        metadata['pixel'] = "{} {}".format(metadata['pixel row'], metadata['pixel col'])
                     elif lines[line_idx][:-1] == 'PPS pre-irrad' or lines[line_idx][:-1] == 'FBK sample - pre-irrad' or lines[line_idx][:-1] == 'PPS TI':
                         metadata['irradiation flux [p/cm^2]'] = 0.0
                         metadata['irradiated'] = False
@@ -234,9 +242,9 @@ def get_column_info_for_db(colName: str):
     elif colName == "start":
         return "TEXT NOT NULL"
     elif colName == "stop":
-        return "TEXT NOT NULL"
+        return "TEXT"
     elif colName == "elapsed [s]":
-        return "INTEGER NOT NULL"
+        return "REAL"
     elif colName == "tester":
         return "TEXT NOT NULL"
     elif colName == "temperature [C]":
@@ -246,21 +254,21 @@ def get_column_info_for_db(colName: str):
     elif colName == "I averaging":
         return "INTEGER"
     elif colName == "V source":
-        return "TEXT NOT NULL"
+        return "TEXT"
     elif colName == "V integration time [ms]":
-        return "REAL NOT NULL"
+        return "REAL"
     elif colName == "V averaging":
-        return "INTEGER NOT NULL"
+        return "INTEGER"
     elif colName == "compliance [A]":
-        return "REAL NOT NULL"
+        return "REAL"
     elif colName == "ramp up step [V]":
-        return "REAL NOT NULL"
+        return "REAL"
     elif colName == "ramp up delay [s]":
-        return "REAL NOT NULL"
+        return "REAL"
     elif colName == "ramp down step [V]":
-        return "REAL NOT NULL"
+        return "REAL"
     elif colName == "ramp down delay [s]":
-        return "REAL NOT NULL"
+        return "REAL"
     elif colName == "V step mode":
         return "TEXT NOT NULL"
     elif colName == "sample":
