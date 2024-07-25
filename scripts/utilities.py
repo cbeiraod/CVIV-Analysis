@@ -37,6 +37,11 @@ class CVIV_Types(enum.Enum):
     IV = 0
     IV_Two_Probes = 1
     CV = 2
+    IV_Perugia = 3
+    CV_Perugia = 4
+    IV_INESC = 5
+    CV_INESC = 6
+    IV_Tagus = 7
     # Add new run types here
 
     def get_type(string: str):
@@ -45,12 +50,16 @@ class CVIV_Types(enum.Enum):
             return CVIV_Types.IV_Two_Probes
         elif string == 'CV measurement\n':
             return CVIV_Types.CV
+        elif string == 'IV perugia\n':
+            return CVIV_Types.IV_Perugia
+        elif string == 'CV measurement perugia\n':
+            return CVIV_Types.CV_Perugia
         # Add new run types here
 
         return None
 
 def is_cviv_run(file_path: Path):
-    if file_path.suffix == ".iv" or file_path.suffix == ".cv":
+    if file_path.suffix == ".iv" or file_path.suffix == ".cv" or file_path.suffix == ".txt":
         with open(file_path, "r") as file:
             info_line = file.readline()
 
@@ -116,6 +125,9 @@ def get_cviv_metadata(file_path: Path, logger: logging.Logger):
                             metadata['LCR signal level [V]'] = float(lines[line_idx + 2][:-1].split(' ')[3])/1000.
                             metadata['LCR averaging'] = int(lines[line_idx + 3][:-1].split(': ')[1])
                             line_idx += 3
+                        elif metadata['LCR meter'] == 'Unknown':
+                            metadata['LCR frequency [Hz]'] = int(lines[line_idx + 1][:-1].split(' ')[2])
+                            line_idx += 1
                         else:
                             raise RuntimeError(f'Unknown LCR Meter instrument type ({metadata["LCR meter"]}), in run {str(file_path)}')
                     else:
